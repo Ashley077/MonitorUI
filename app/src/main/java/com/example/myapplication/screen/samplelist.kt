@@ -9,15 +9,20 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color.Companion.Black
+import androidx.compose.ui.graphics.Color.Companion.Blue
 
 
 import androidx.compose.ui.graphics.Color.Companion.Gray
@@ -29,6 +34,18 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.myapplication.component.CustomTopAppBar
 import androidx.compose.ui.graphics.Color.Companion.Gray
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontWeight.Companion.Black
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import java.nio.file.Files.copy
 import java.util.Collections.copy
 
@@ -48,34 +65,17 @@ fun scaffoldsample(navController: NavController){
         }, content = {
             Column(modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally) {
-
-                Text(text = "Sample List",style = TextStyle(fontSize = 30.sp, fontFamily = FontFamily.Cursive))
-                Spacer(modifier = Modifier.height(20.dp))
-
-                Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
-                    Button(
-                        onClick = {},
-                        shape = RoundedCornerShape(20.dp),
-                        modifier = Modifier
-                            .height(50.dp)
-                    ) {
-                        Text(text = "test")
-                    }
+                Box(
+                    modifier = Modifier.padding(20.dp),
+                    contentAlignment = Alignment.Center
+                ){
+                    Text(text = "Sample List", modifier = Modifier.align(Alignment.TopCenter),
+                        style = TextStyle(fontSize = 50.sp,
+                            fontFamily = FontFamily.Cursive,
+                        ))
                 }
                 Spacer(modifier = Modifier.height(20.dp))
-
-
-
-                Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
-                    Button(
-                        onClick = {},
-                        shape = RoundedCornerShape(20.dp),
-                        modifier = Modifier
-                            .height(50.dp)
-                    ) {
-                        Text(text = "rain")
-                    }
-                }
+                CheckableRow()
 
 
 
@@ -83,79 +83,68 @@ fun scaffoldsample(navController: NavController){
         }
     )
 }
-/*@Composable
-fun CustomSeekbar(
-    modifier: Modifier,
-    onProgressChanged: (progress: Float) -> Unit
-) {
-    // 当前进度，范围0-1之间， 初始为0
-    var progress by remember { mutableStateOf(0f) }
-    // bar是否被按下
-    var barPressed by remember{ mutableStateOf(false) }
-    // 锚点的半径, 根据barPressed的状态'平滑'地改变自身的大小
-    val radius by animateFloatAsState(if (barPressed) 30f else 20f)
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        // 进度的文本
-        Text(text = (progress * 100).toInt().toString(), Modifier.width(30.dp))
-        Canvas(modifier = Modifier
-            .height(30.dp)
-            .fillMaxWidth()
-            .weight(1f)
-            .padding(10.dp)
-            .pointerInput(Unit) {
-                detectDragGestures(
-                    onDragStart = { barPressed = true },
-                    onDragCancel = { barPressed = false },
-                    onDragEnd = {
+@Composable
 
-                        barPressed = false
-                        onProgressChanged.invoke(progress)
-                    },
-                    onDrag = { change, dragAmount ->
-
-                        progress = if (change.position.x < 0) {
-                            0f
-                        } else if (change.position.x > size.width) {
-                            1f
-                        } else {
-                            (change.position.x / this.size.width)
-                        }
-                    })
-            }
-            .pointerInput(Unit) {
-
-                detectTapGestures(onTap = {
-                    progress = (it.x / size.width)
-                    barPressed = false
-                })
-            },
-            onDraw = {
-                // 底部灰色线条
-                drawLine(
-                    start = Offset(0f, size.height / 2),
-                    end = Offset(size.width, size.height / 2),
-                    strokeWidth = 8f,
-                    color = androidx.compose.ui.graphics.Color.Gray
+fun CheckableRow() {
+    MaterialTheme {
+        var checked by remember { mutableStateOf(false) }
+        var checka by remember { mutableStateOf(false) }
+        var checkb by remember { mutableStateOf(false) }
+        var checkc by remember { mutableStateOf(false) }
+        Row(
+            Modifier
+                .toggleable(
+                    value = checked,
+                    role = Role.Checkbox,
+                    onValueChange = { checked = !checked }
                 )
-                // 顶部蓝色线条
-                drawLine(
-                    color = androidx.compose.ui.graphics.Color.Blue,
-                    start = Offset(0f, size.height / 2),
-                    end = Offset(size.width * progress, size.height / 2),
-                    strokeWidth = 12f
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
+            Text("rain", Modifier.weight(1f))
+            Checkbox(checked = checked, onCheckedChange = null)
+        }
+        Row(
+            Modifier
+                .toggleable(
+                    value = checka,
+                    role = Role.Checkbox,
+                    onValueChange = { checka = !checka }
                 )
-                // 锚点
-                drawCircle(
-                    color = androidx.compose.ui.graphics.Color.Blue,
-                    radius = radius,
-                    center = Offset(size.width * progress, size.height / 2)
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
+            Text("boil water", Modifier.weight(1f))
+            Checkbox(checked = checka, onCheckedChange = null)
+        }
+        Row(
+            Modifier
+                .toggleable(
+                    value = checkb,
+                    role = Role.Checkbox,
+                    onValueChange = { checkb = !checkb }
                 )
-            })
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
+            Text("cat", Modifier.weight(1f))
+            Checkbox(checked = checkb, onCheckedChange = null)
+        }
+        Row(
+            Modifier
+                .toggleable(
+                    value = checkc,
+                    role = Role.Checkbox,
+                    onValueChange = { checkc = !checkc }
+                )
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
+            Text("rain", Modifier.weight(1f))
+            Checkbox(checked = checkc, onCheckedChange = null)
+        }
     }
-}*/
+}
 
 
 

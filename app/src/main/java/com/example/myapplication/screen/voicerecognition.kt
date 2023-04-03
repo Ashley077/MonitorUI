@@ -22,11 +22,9 @@ import com.example.myapplication.component.CustomTopAppBar
 import com.example.myapplication.R
 
 @Composable
-<<<<<<< HEAD
+
 fun VoiceRecognition(navController: NavController){
-=======
-fun voicerecognition(navController: NavController){
->>>>>>> master
+
     Box(modifier = Modifier.fillMaxSize()){
         scaffoldvoice(navController)
     }
@@ -76,11 +74,9 @@ fun scaffoldvoice(navController: NavController){
 
                 Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
                     Button(
-<<<<<<< HEAD
+
                         onClick = {navController.navigate(Routes.Voice.route)},
-=======
-                        onClick = {navController.navigate(Routes.voice.route)},
->>>>>>> master
+
                         shape = RoundedCornerShape(50.dp),
                         modifier = Modifier
                             .fillMaxWidth()

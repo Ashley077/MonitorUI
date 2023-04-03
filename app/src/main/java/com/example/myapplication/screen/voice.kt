@@ -47,6 +47,7 @@ fun DisplayImage(navController: NavHostController){
                 ,horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(text = "voice", style = TextStyle(fontSize = 70.sp), fontFamily = FontFamily.Cursive)
+
                 Spacer(modifier = Modifier.height(40.dp))
                 MyImage()
                 Spacer(modifier = Modifier.height(40.dp))
@@ -65,7 +66,7 @@ fun DisplayImage(navController: NavHostController){
                         Text(text = "Add voice")
                     }
                 }
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(20.dp))
                 Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
                     Button(
 
@@ -81,7 +82,7 @@ fun DisplayImage(navController: NavHostController){
                     }
                 }
 
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(20.dp))
                 Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
                     Button(
 
@@ -93,6 +94,20 @@ fun DisplayImage(navController: NavHostController){
                             .height(50.dp)
                     ) {
                         Text(text = "Historical record")
+                    }
+                }
+                Spacer(modifier = Modifier.height(20.dp))
+                Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
+                    Button(
+
+                        onClick = { navController.navigate(Routes.ContinueStatus.route)},
+
+                        shape = RoundedCornerShape(50.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                    ) {
+                        Text(text = "Continue Status")
                     }
                 }
 
@@ -111,6 +126,7 @@ fun DisplayImage(navController: NavHostController){
                         )
                     )
                 }
+
             }
         }
     )

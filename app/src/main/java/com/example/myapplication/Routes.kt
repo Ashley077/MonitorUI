@@ -11,6 +11,6 @@ sealed class Routes(val route: String) {
     object SampleList : Routes("SampleList")
     object HistoricalRecord : Routes("HistoricalRecord")
     object Loading : Routes("Loading")
-
+    object ContinueStatus : Routes("ContinueStatus")
 
 }
