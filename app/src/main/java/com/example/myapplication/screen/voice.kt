@@ -26,7 +26,9 @@ import com.example.myapplication.Routes
 import com.example.myapplication.component.CustomTopAppBar
 
 @Composable
+
 fun Voice(navController: NavHostController){
+
     Box(modifier = Modifier.fillMaxSize()){
         DisplayImage(navController)
     }
@@ -51,7 +53,10 @@ fun DisplayImage(navController: NavHostController){
 
                 Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
                     Button(
+
                         onClick = { navController.navigate(Routes.VoiceRecognition.route)},
+
+
                         shape = RoundedCornerShape(50.dp),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -63,7 +68,10 @@ fun DisplayImage(navController: NavHostController){
                 Spacer(modifier = Modifier.height(40.dp))
                 Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
                     Button(
+
                         onClick = { navController.navigate(Routes.SampleList.route)},
+
+
                         shape = RoundedCornerShape(50.dp),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -76,7 +84,9 @@ fun DisplayImage(navController: NavHostController){
                 Spacer(modifier = Modifier.height(40.dp))
                 Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
                     Button(
+
                         onClick = { navController.navigate(Routes.HistoricalRecord.route)},
+
                         shape = RoundedCornerShape(50.dp),
                         modifier = Modifier
                             .fillMaxWidth()

@@ -12,4 +12,5 @@ sealed class Routes(val route: String) {
     object HistoricalRecord : Routes("HistoricalRecord")
     object Loading : Routes("Loading")
 
+
 }

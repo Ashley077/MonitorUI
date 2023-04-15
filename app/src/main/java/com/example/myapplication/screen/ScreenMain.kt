@@ -24,6 +24,7 @@ fun ScreenMain(){
             ForgotPassword(navController = navController)
         }
         
+
         composable(Routes.Voice.route){
             Voice(navController = navController)
         }
@@ -42,6 +43,7 @@ fun ScreenMain(){
 
         composable(Routes.Loading.route){
             Loading(navController = navController)
+
         }
     }
 }

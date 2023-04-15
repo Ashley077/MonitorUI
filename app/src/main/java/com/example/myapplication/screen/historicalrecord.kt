@@ -6,12 +6,16 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+
 import androidx.compose.foundation.selection.toggleable
+
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+
 import androidx.compose.ui.semantics.Role
+
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
@@ -22,7 +26,9 @@ import com.example.myapplication.TodoItem
 import com.example.myapplication.component.CustomTopAppBar
 
 @Composable
+
 fun HistoricalRecord(navController: NavController){
+
     Box(modifier = Modifier.fillMaxSize()){
         scaffoldhistory(navController)
     }
@@ -40,12 +46,15 @@ fun scaffoldhistory(navController: NavController){
 
                 Text(text = "Historical Record",style = TextStyle(fontSize = 30.sp, fontFamily = FontFamily.Cursive))
                 Spacer(modifier = Modifier.height(20.dp))
+
                 CheckableRow()
+
             }
         }
     )
 }
 @Composable
+
 fun CheckableRow() {
     MaterialTheme {
         var checked by remember { mutableStateOf(false) }
@@ -106,44 +115,6 @@ fun CheckableRow() {
         }
     }
 }
-/*@Composable
-private fun Greetings(
-    modifier: Modifier = Modifier,
-    names: List<String> = List(1000) { "$it" }
-) {
-    LazyColumn(modifier = modifier.padding(vertical = 4.dp)) {
-        items(items = names) { name ->
-            Greeting(name = name)
-        }
-    }
-}
 
-@Composable
-private fun Greeting(name: String) {
-
-    var expanded by remember { mutableStateOf(false) }
-
-    val extraPadding by animateDpAsState(
-        if (expanded) 48.dp else 0.dp,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessLow
-        )
-    )
-    Surface(
-        
-        modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
-    ) {
-        Row(modifier = Modifier.padding(24.dp)) {
-            Column(modifier = Modifier
-                .weight(1f)
-                .padding(bottom = extraPadding.coerceAtLeast(0.dp))
-            ) {
-                Text(text = "Rain, ")
-                Text(text = "3/31")
-            }
-        }
-    }
-}*/
 
 

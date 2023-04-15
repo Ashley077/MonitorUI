@@ -33,7 +33,9 @@ import java.nio.file.Files.copy
 import java.util.Collections.copy
 
 @Composable
+
 fun SampleList(navController: NavController){
+
     Box(modifier = Modifier.fillMaxSize()){
         scaffoldsample(navController)
     }
@@ -61,6 +63,19 @@ fun scaffoldsample(navController: NavController){
                     }
                 }
                 Spacer(modifier = Modifier.height(20.dp))
+
+
+
+                Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
+                    Button(
+                        onClick = {},
+                        shape = RoundedCornerShape(20.dp),
+                        modifier = Modifier
+                            .height(50.dp)
+                    ) {
+                        Text(text = "rain")
+                    }
+                }
 
 
 
