@@ -3,7 +3,6 @@ package com.example.myapplication.screen
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -11,7 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -21,8 +19,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.LineHeightStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -33,7 +29,7 @@ import com.example.myapplication.component.CustomTopAppBar
 
 @Composable
 
-fun ContinueStatus(navController: NavController){
+fun ConnectStatus(navController: NavController){
 
     Box(modifier = Modifier.fillMaxSize()){
         scaffoldContinue(navController)
@@ -44,7 +40,7 @@ fun ContinueStatus(navController: NavController){
 fun scaffoldContinue(navController: NavController){
     Scaffold(
         topBar = { CustomTopAppBar(navController, "Connect Status", true)
-        }, content = {
+        }, content = { it
             Column(modifier = Modifier.fillMaxSize().padding(16.dp),
                horizontalAlignment = Alignment.CenterHorizontally) {
                 Box(
@@ -55,7 +51,7 @@ fun scaffoldContinue(navController: NavController){
                     style = TextStyle(fontSize = 50.sp,
                         fontFamily = FontFamily.Cursive,
                     ))
-            }
+                }
 
                 Spacer(modifier = Modifier.height(20.dp))
                 funData()
@@ -103,6 +99,7 @@ fun funData() {
             Button(
                 onClick = {
                     notesList.add(inputvalue.value.text)
+                    inputvalue.value = TextFieldValue("")
                 },
                 modifier = Modifier
                     .weight(0.2f)

@@ -1,24 +1,29 @@
 package com.example.myapplication.screen
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.Routes
+import com.example.myapplication.model.data.local.dao.UserInfoDao
+import com.example.myapplication.model.data.local.dao.UserInfoDao_Impl
+import com.example.myapplication.model.data.local.entity.UserInfo
 import com.example.myapplication.viewmodel.AccountViewModel
+import com.example.myapplication.viewmodel.LoginViewModel
 
-//import com.example.myapplication.viewmodel.AccountViewModel
 
 @Composable
-fun ScreenMain(accountViewModel: AccountViewModel){
+fun ScreenMain(accountViewModel: AccountViewModel,loginViewModel: LoginViewModel){
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = Routes.Login.route) {
 
         composable(Routes.Login.route) {
-            LoginPage(navController = navController, accountViewModel = accountViewModel)
+            LoginPage(navController = navController, accountViewModel = accountViewModel, loginviewModel = loginViewModel)
         }
-
+//        viewModel = hiltViewModel()
         composable(Routes.SignUp.route) {
             Signup(navController = navController)
         }
@@ -49,8 +54,8 @@ fun ScreenMain(accountViewModel: AccountViewModel){
 
         }
 
-        composable(Routes.ContinueStatus.route){
-            ContinueStatus(navController = navController)
+        composable(Routes.ConnectStatus.route){
+            ConnectStatus(navController = navController)
 
         }
     }

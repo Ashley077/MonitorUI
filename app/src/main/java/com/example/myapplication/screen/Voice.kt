@@ -10,8 +10,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -39,7 +37,7 @@ fun DisplayImage(navController: NavHostController){
     Scaffold (
         topBar = {
             CustomTopAppBar(navController, "voice", true)
-        }, content = {
+        }, content = { it
             Column(modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
@@ -78,7 +76,7 @@ fun DisplayImage(navController: NavHostController){
                             .fillMaxWidth()
                             .height(50.dp)
                     ) {
-                        Text(text = "Sample list")
+                        Text(text = "Sample List")
                     }
                 }
 
@@ -93,21 +91,21 @@ fun DisplayImage(navController: NavHostController){
                             .fillMaxWidth()
                             .height(50.dp)
                     ) {
-                        Text(text = "Historical record")
+                        Text(text = "Historical Record")
                     }
                 }
                 Spacer(modifier = Modifier.height(20.dp))
                 Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
                     Button(
 
-                        onClick = { navController.navigate(Routes.ContinueStatus.route)},
+                        onClick = { navController.navigate(Routes.ConnectStatus.route)},
 
                         shape = RoundedCornerShape(50.dp),
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp)
                     ) {
-                        Text(text = "Continue Status")
+                        Text(text = "Connect Status")
                     }
                 }
 

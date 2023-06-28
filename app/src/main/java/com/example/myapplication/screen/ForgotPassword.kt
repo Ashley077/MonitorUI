@@ -38,7 +38,7 @@ fun ScaffoldForgotPassword(navController: NavHostController){
     Scaffold (
         topBar = {
             CustomTopAppBar(navController, "Forgot Password", true)
-        }, content = {
+        }, content = { it
             Column (
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,

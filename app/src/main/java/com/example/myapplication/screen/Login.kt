@@ -29,24 +29,27 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.myapplication.Routes
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.ui.theme.Purple700
+import com.example.myapplication.viewmodel.LoginViewModel
 import com.example.myapplication.viewmodel.AccountViewModel
-//import com.example.myapplication.viewmodel.AccountViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-
+@OptIn(ExperimentalStdlibApi::class)
 @Composable
-fun LoginPage(navController: NavHostController,accountViewModel:AccountViewModel) {
+fun LoginPage(navController: NavHostController,accountViewModel:AccountViewModel,loginviewModel: LoginViewModel) {
     val inputUserName = accountViewModel.inputUserNameData.observeAsState()
     val inputPassword = accountViewModel.inputPasswordData.observeAsState()
     val canButtonEnable = accountViewModel.canLoginButtonEnableData.observeAsState()
     val lastTimeLoginIsFail = accountViewModel.lastTimeLoginIsFailData.observeAsState()
 
     val coroutineScope = rememberCoroutineScope()
+
+    val allUser = loginviewModel.allUser.observeAsState()
 
     val isLoading = remember { mutableStateOf(false) }
     if(isLoading.value){
@@ -58,6 +61,10 @@ fun LoginPage(navController: NavHostController,accountViewModel:AccountViewModel
                 color = Color.Red
             )
         }
+
+
+    }
+    else{
         Box(modifier = Modifier.fillMaxSize()) {
             ClickableText(
                 text = AnnotatedString("Sign up here"),
@@ -73,7 +80,6 @@ fun LoginPage(navController: NavHostController,accountViewModel:AccountViewModel
                 )
             )
         }
-    }else{
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
@@ -104,7 +110,8 @@ fun LoginPage(navController: NavHostController,accountViewModel:AccountViewModel
                     .fillMaxWidth()
                     .height(50.dp),
 
-                    onClick = { isLoading.value = true
+                    onClick = {
+                        isLoading.value = true
                         coroutineScope.launch(Dispatchers.Main) {
                             val isSuccess: Boolean = accountViewModel.login()
                             if (isSuccess) {
@@ -112,7 +119,9 @@ fun LoginPage(navController: NavHostController,accountViewModel:AccountViewModel
                             } else {
                                 isLoading.value = false
                             }
-                        }},
+                        }
+                        loginviewModel.addUser(inputUserName.value ?: "", inputPassword.value ?: "")
+                       },
                     enabled = canButtonEnable.value ?: false,
                     shape = RoundedCornerShape(50.dp),
 

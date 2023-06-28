@@ -1,13 +1,11 @@
 package com.example.myapplication.screen
 
-import android.graphics.Paint.Style
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,7 +33,7 @@ fun scaffoldvoice(navController: NavController){
     Scaffold(
         topBar =  {
             CustomTopAppBar(navController ,"voice recognition",true)
-        }, content = {
+        }, content = { it
             Column( modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally) {
@@ -54,7 +52,7 @@ fun scaffoldvoice(navController: NavController){
                             .fillMaxWidth()
                             .height(50.dp)
                     ) {
-                        Text(text = "identify")
+                        Text(text = "Identify")
                     }
                 }
                 Spacer(modifier = Modifier.height(20.dp))
