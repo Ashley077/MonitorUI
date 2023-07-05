@@ -3,8 +3,8 @@ package com.example.myapplication
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
 import androidx.lifecycle.ViewModelProvider
+import com.example.myapplication.manager.RemoteClientManager
 import com.example.myapplication.model.AccountService
 import com.example.myapplication.model.data.local.dao.UserInfoDao
 import com.example.myapplication.screen.ScreenMain
@@ -16,7 +16,7 @@ import com.example.myapplication.viewmodel.LoginViewModelFactory
 
 class MainActivity : ComponentActivity() {
     private lateinit var accountViewModel: AccountViewModel
-    private lateinit var loginViewModelFactory : LoginViewModelFactory
+    private lateinit var loginViewModelFactory: LoginViewModelFactory
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var userInfoDao: UserInfoDao
     private val accountService = AccountService()
@@ -24,17 +24,19 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val accountFactory = AccountViewModelFactory(accountService)
         accountViewModel = ViewModelProvider(this, accountFactory)[AccountViewModel::class.java]
-        userInfoDao = (application as myapplicationApplication).db.userInfoDao
+        userInfoDao = (application as MyapplicationApplication).db.userInfoDao
         loginViewModelFactory = LoginViewModelFactory(userInfoDao)
         loginViewModel = ViewModelProvider(this, loginViewModelFactory)[LoginViewModel::class.java]
 
         setContent {
             MyApplicationTheme {
-                  /*Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ){*/
-                   ScreenMain(accountViewModel = accountViewModel,loginViewModel = loginViewModel)
+                /*Surface(
+                  modifier = Modifier.fillMaxSize(),
+                  color = MaterialTheme.colors.background
+              ){*/
+                ScreenMain(accountViewModel = accountViewModel, loginViewModel = loginViewModel)
+                RemoteClientManager.apiServiceClient
+
             }
         }
     }

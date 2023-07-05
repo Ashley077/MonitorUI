@@ -1,15 +1,10 @@
 package com.example.myapplication.screen
 
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.Routes
-import com.example.myapplication.model.data.local.dao.UserInfoDao
-import com.example.myapplication.model.data.local.dao.UserInfoDao_Impl
-import com.example.myapplication.model.data.local.entity.UserInfo
 import com.example.myapplication.viewmodel.AccountViewModel
 import com.example.myapplication.viewmodel.LoginViewModel
 
@@ -21,7 +16,7 @@ fun ScreenMain(accountViewModel: AccountViewModel,loginViewModel: LoginViewModel
     NavHost(navController = navController, startDestination = Routes.Login.route) {
 
         composable(Routes.Login.route) {
-            LoginPage(navController = navController, accountViewModel = accountViewModel, loginviewModel = loginViewModel)
+            LoginPage(navController = navController, accountViewModel = accountViewModel, loginViewModel = loginViewModel)
         }
 //        viewModel = hiltViewModel()
         composable(Routes.SignUp.route) {

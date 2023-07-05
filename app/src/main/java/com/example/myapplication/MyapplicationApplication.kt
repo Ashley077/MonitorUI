@@ -5,7 +5,7 @@ import androidx.room.Room
 import com.example.myapplication.model.data.local.database.UserDataBase
 
 
-class myapplicationApplication : Application(){
+class MyapplicationApplication : Application(){
     lateinit var db : UserDataBase
 
     override fun onCreate() {
