@@ -4,6 +4,7 @@ import com.example.myapplication.model.remote.LoginResult
 import com.example.myapplication.model.remote.RegisterResult
 import com.example.myapplication.model.remote.UserInfo
 import com.example.myapplication.model.remote.UserRegisterInfo
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 
@@ -24,7 +25,7 @@ interface ApiService {
      * @author <a href='https://github.com/Ashley077'>Ashley</a>
      */
     @POST("/login")
-    suspend fun login(@Body userInfo: UserInfo): LoginResult
+    suspend fun login(@Body userInfo: UserInfo): Response<LoginResult>
 
     /**
      * "/Register"的 HTTP POST 請求
@@ -37,5 +38,5 @@ interface ApiService {
      * @author <a href='https://github.com/Ashley077'>Ashley</a>
      */
     @POST("/register")
-    suspend fun register(@Body userRegisterInfo: UserRegisterInfo): RegisterResult
+    suspend fun register(@Body userRegisterInfo: UserRegisterInfo): Response<RegisterResult>
 }

@@ -59,6 +59,8 @@ fun LoginPage(
         }
         is RemoteLoginStatus.Success -> {
             if (navController.currentBackStackEntry?.destination?.route == Routes.Login.route) {
+                loginViewModel.resetStatus()
+                accountViewModel.setInputPassword("")
                 navController.navigate(Routes.Voice.route)
             }
         }
@@ -126,7 +128,7 @@ fun LoginPage(
 //
 //                            }
 //                        }
-//                        loginviewModel.addUser(inputUserName.value ?: "", inputPassword.value ?: "")
+//                        loginViewModel.addUser(inputUserName.value ?: "", inputPassword.value ?: "")
                         },
                         enabled = canButtonEnable.value ?: false,
                         shape = RoundedCornerShape(50.dp),
@@ -138,7 +140,7 @@ fun LoginPage(
                 if (status.value is RemoteLoginStatus.Failed) {
                     Box(modifier = Modifier.padding(40.dp, 10.dp, 40.dp, 0.dp)) {
                         Text(
-                            text = "帳號密碼錯誤",
+                            text = (status.value as RemoteLoginStatus.Failed).throwable.message ?: "請稍後再試?",
                             fontSize = 25.sp,
                             color = Color.Red
                         )
