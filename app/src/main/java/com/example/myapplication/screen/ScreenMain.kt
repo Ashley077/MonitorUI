@@ -20,7 +20,7 @@ fun ScreenMain(accountViewModel: AccountViewModel,loginViewModel: LoginViewModel
         }
 //        viewModel = hiltViewModel()
         composable(Routes.SignUp.route) {
-            Signup(navController = navController)
+            Register(navController = navController)
         }
 
         composable(Routes.ForgotPassword.route) {
