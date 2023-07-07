@@ -6,15 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.manager.RemoteClientManager
-import com.example.myapplication.model.data.local.dao.UserInfoDao
+import com.example.myapplication.model.data.local.dao.TokenInfoDao
+import com.example.myapplication.model.data.local.entity.TokenInfo
 import com.example.myapplication.model.remote.LoginResult
 import com.example.myapplication.model.remote.UserInfo
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import retrofit2.HttpException
 import java.net.HttpURLConnection
 
 /**
@@ -24,8 +22,7 @@ import java.net.HttpURLConnection
  *
  * @author Ashley
  */
-class LoginViewModel(private val userInfoDao: UserInfoDao) : ViewModel() {
-    val allUser = userInfoDao.getAllUser()
+class LoginViewModel(private val tokenInfoDao: TokenInfoDao) : ViewModel() {
 
     private val _status = MutableLiveData<RemoteLoginStatus>(RemoteLoginStatus.Init)
 
@@ -36,6 +33,29 @@ class LoginViewModel(private val userInfoDao: UserInfoDao) : ViewModel() {
      */
     val status: LiveData<RemoteLoginStatus>
         get() = _status
+
+    /**
+     * 此方法提供搜尋 Token 的服務
+     *
+     * 確認 Token 能不能使用 ， 如果能使用則登入成功
+     *
+     * @author Ashley
+     */
+    fun searchToken() {
+        _status.value = RemoteLoginStatus.Loading
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = tokenInfoDao.getToken()
+            if (result == null || result.token.isEmpty()) {
+                _status.postValue(RemoteLoginStatus.Init)
+            } else {
+                // send to backend check this token can be used
+                // Yes
+                _status.postValue(RemoteLoginStatus.Success(""))
+                // No
+//                _status.postValue(RemoteLoginStatus.Init)
+            }
+        }
+    }
 
     /**
      * login 提供到後端的請求 此方法會改變 [status] 的狀態
@@ -56,6 +76,9 @@ class LoginViewModel(private val userInfoDao: UserInfoDao) : ViewModel() {
 //                }
                 if (response.code() == HttpURLConnection.HTTP_OK) {
                     _status.postValue(RemoteLoginStatus.Success(account))
+                    response.body()?.data?.let {
+                        tokenInfoDao.insert(TokenInfo(1, it))
+                    }
                     Log.i("Ashley-log", response.body()?.data ?: "no token")
                 } else if (response.code() == HttpURLConnection.HTTP_BAD_REQUEST) {
                     if (response.errorBody() != null) {
@@ -108,19 +131,6 @@ class LoginViewModel(private val userInfoDao: UserInfoDao) : ViewModel() {
         _status.value = RemoteLoginStatus.Init
 
     }
-
-    fun addUser(name: String, password: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-//            userInfoDao.insert(UserInfo(0 ,name ,password))
-        }
-    }
-
-    fun deleteUser(userInfo: UserInfo) {
-        viewModelScope.launch(Dispatchers.IO) {
-//            userInfoDao.delete(userInfo)
-        }
-    }
-
 }
 
 /**

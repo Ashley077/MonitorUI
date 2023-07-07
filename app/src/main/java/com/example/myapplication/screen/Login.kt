@@ -11,6 +11,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,14 +38,12 @@ fun LoginPage(
     accountViewModel: AccountViewModel,
     loginViewModel: LoginViewModel
 ) {
+
+    val firstSearch = remember{ mutableStateOf(true) }
+
     val inputUserName = accountViewModel.inputUserNameData.observeAsState()
     val inputPassword = accountViewModel.inputPasswordData.observeAsState()
     val canButtonEnable = accountViewModel.canLoginButtonEnableData.observeAsState()
-    val lastTimeLoginIsFail = accountViewModel.lastTimeLoginIsFailData.observeAsState()
-
-    val coroutineScope = rememberCoroutineScope()
-
-    val allUser = loginViewModel.allUser.observeAsState()
 
     val status = loginViewModel.status.observeAsState()
     when (status.value) {
@@ -65,6 +65,10 @@ fun LoginPage(
             }
         }
         else -> {
+            if (status.value is RemoteLoginStatus.Init && firstSearch.value) {
+                firstSearch.value = false
+                loginViewModel.searchToken()
+            }
             Box(modifier = Modifier.fillMaxSize()) {
                 ClickableText(
                     text = AnnotatedString("Sign up here"),
