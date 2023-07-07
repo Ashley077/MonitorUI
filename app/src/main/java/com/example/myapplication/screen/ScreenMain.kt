@@ -6,11 +6,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.Routes
 import com.example.myapplication.viewmodel.AccountViewModel
+import com.example.myapplication.viewmodel.LogOutViewModel
 import com.example.myapplication.viewmodel.LoginViewModel
 
 
 @Composable
-fun ScreenMain(accountViewModel: AccountViewModel,loginViewModel: LoginViewModel){
+fun ScreenMain(accountViewModel: AccountViewModel,loginViewModel: LoginViewModel, logOutViewModel: LogOutViewModel){
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = Routes.Login.route) {
@@ -29,7 +30,7 @@ fun ScreenMain(accountViewModel: AccountViewModel,loginViewModel: LoginViewModel
         
 
         composable(Routes.Voice.route){
-            Voice(navController = navController)
+            Voice(navController = navController, logOutViewModel = logOutViewModel)
         }
 
         composable(Routes.VoiceRecognition.route){

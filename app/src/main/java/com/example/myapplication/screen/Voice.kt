@@ -22,18 +22,20 @@ import com.example.myapplication.ui.theme.Purple700
 import com.example.myapplication.R
 import com.example.myapplication.Routes
 import com.example.myapplication.component.CustomTopAppBar
+import com.example.myapplication.viewmodel.LogOutViewModel
+import kotlin.math.log
 
 @Composable
 
-fun Voice(navController: NavHostController){
+fun Voice(navController: NavHostController, logOutViewModel: LogOutViewModel){
 
     Box(modifier = Modifier.fillMaxSize()){
-        DisplayImage(navController)
+        DisplayImage(navController, logOutViewModel)
     }
 }
 
 @Composable
-fun DisplayImage(navController: NavHostController){
+fun DisplayImage(navController: NavHostController, logOutViewModel: LogOutViewModel){
     Scaffold (
         topBar = {
             CustomTopAppBar(navController, "voice", true)
@@ -115,7 +117,10 @@ fun DisplayImage(navController: NavHostController){
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
                             .padding(10.dp),
-                        onClick = { navController.navigate(Routes.Login.route)},
+                        onClick = {
+                            logOutViewModel.logout()
+                            navController.navigate(Routes.Login.route)
+                                  },
                         style = TextStyle(
                             fontSize = 20.sp,
                             fontFamily = FontFamily.Cursive,

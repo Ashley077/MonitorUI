@@ -6,27 +6,28 @@ import androidx.activity.compose.setContent
 import androidx.lifecycle.ViewModelProvider
 import com.example.myapplication.manager.RemoteClientManager
 import com.example.myapplication.model.AccountService
-import com.example.myapplication.model.data.local.dao.UserInfoDao
+import com.example.myapplication.model.data.local.dao.TokenInfoDao
 import com.example.myapplication.screen.ScreenMain
 import com.example.myapplication.ui.theme.MyApplicationTheme
-import com.example.myapplication.viewmodel.AccountViewModel
-import com.example.myapplication.viewmodel.AccountViewModelFactory
-import com.example.myapplication.viewmodel.LoginViewModel
-import com.example.myapplication.viewmodel.LoginViewModelFactory
+import com.example.myapplication.viewmodel.*
 
 class MainActivity : ComponentActivity() {
     private lateinit var accountViewModel: AccountViewModel
     private lateinit var loginViewModelFactory: LoginViewModelFactory
     private lateinit var loginViewModel: LoginViewModel
-    private lateinit var userInfoDao: UserInfoDao
+    private lateinit var logOutViewModelFactory: LogOutViewModelFactory
+    private lateinit var logOutViewModel: LogOutViewModel
+    private lateinit var tokenInfoDao: TokenInfoDao
     private val accountService = AccountService()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val accountFactory = AccountViewModelFactory(accountService)
+        tokenInfoDao = (application as MyapplicationApplication).db.tokenInfoDao
         accountViewModel = ViewModelProvider(this, accountFactory)[AccountViewModel::class.java]
-        userInfoDao = (application as MyapplicationApplication).db.userInfoDao
-        loginViewModelFactory = LoginViewModelFactory(userInfoDao)
+        loginViewModelFactory = LoginViewModelFactory(tokenInfoDao)
         loginViewModel = ViewModelProvider(this, loginViewModelFactory)[LoginViewModel::class.java]
+        logOutViewModelFactory = LogOutViewModelFactory(tokenInfoDao)
+        logOutViewModel = ViewModelProvider(this, logOutViewModelFactory)[LogOutViewModel::class.java]
 
         setContent {
             MyApplicationTheme {
@@ -34,7 +35,7 @@ class MainActivity : ComponentActivity() {
                   modifier = Modifier.fillMaxSize(),
                   color = MaterialTheme.colors.background
               ){*/
-                ScreenMain(accountViewModel = accountViewModel, loginViewModel = loginViewModel)
+                ScreenMain(accountViewModel = accountViewModel, loginViewModel = loginViewModel, logOutViewModel = logOutViewModel)
                 RemoteClientManager.apiServiceClient
 
             }
