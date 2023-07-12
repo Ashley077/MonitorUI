@@ -63,7 +63,7 @@ fun DisplayImage(navController: NavHostController, logOutViewModel: LogOutViewMo
                             .fillMaxWidth()
                             .height(50.dp)
                     ) {
-                        Text(text = "Add voice")
+                        Text(text = "Add Voice")
                     }
                 }
                 Spacer(modifier = Modifier.height(20.dp))
