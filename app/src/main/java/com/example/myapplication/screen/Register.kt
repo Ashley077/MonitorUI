@@ -27,9 +27,9 @@ import com.example.myapplication.viewmodel.RemoteRegisterStatus
 
 
 @Composable
-fun Register(navController: NavController) {
+fun Register(navController: NavController, registerViewModel: RegisterViewModel) {
     Box(modifier = Modifier.fillMaxSize()) {
-        ScaffoldSignup(navController, registerViewModel = RegisterViewModel())
+        ScaffoldSignup(navController, registerViewModel = registerViewModel)
     }
 }
 

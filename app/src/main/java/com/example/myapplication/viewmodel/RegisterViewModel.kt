@@ -8,11 +8,13 @@ import com.example.myapplication.manager.RemoteClientManager
 import com.example.myapplication.model.remote.RegisterResult
 import com.example.myapplication.model.remote.UserRegisterInfo
 import com.google.gson.GsonBuilder
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.http.Url
 import java.net.HttpURLConnection
 import java.net.URLConnection
+import javax.inject.Inject
 
 /**
  * 此類別提供註冊服務
@@ -21,8 +23,8 @@ import java.net.URLConnection
  *
  * @author Ashley
  */
-
-class RegisterViewModel : ViewModel() {
+@HiltViewModel
+class RegisterViewModel @Inject constructor() : ViewModel() {
 
     private val _resultStatus = MutableLiveData<RemoteRegisterStatus>(RemoteRegisterStatus.Init)
 

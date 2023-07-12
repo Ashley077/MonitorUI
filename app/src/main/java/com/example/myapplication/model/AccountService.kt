@@ -1,10 +1,11 @@
 package com.example.myapplication.model
 
 import kotlinx.coroutines.delay
+import javax.inject.Inject
+import javax.inject.Singleton
 
-
-
-class AccountService  {
+@Singleton
+class AccountService @Inject constructor() {
     companion object {
         const val FAKE_USER_NAME = "monitor"
         const val FAKE_PASSWORD = "0525"

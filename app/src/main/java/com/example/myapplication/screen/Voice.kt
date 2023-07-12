@@ -1,5 +1,6 @@
 package com.example.myapplication.screen
 
+import androidx.annotation.DisplayContext
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,9 +16,12 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.ui.theme.Purple700
 import com.example.myapplication.R
 import com.example.myapplication.Routes
@@ -97,7 +101,7 @@ fun DisplayImage(navController: NavHostController, logOutViewModel: LogOutViewMo
                     }
                 }
                 Spacer(modifier = Modifier.height(20.dp))
-                Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
+                Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 20.dp)) {
                     Button(
 
                         onClick = { navController.navigate(Routes.ConnectStatus.route)},
@@ -110,26 +114,27 @@ fun DisplayImage(navController: NavHostController, logOutViewModel: LogOutViewMo
                         Text(text = "Connect Status")
                     }
                 }
+                Spacer(modifier = Modifier.height(125.dp))
 
-                Box(modifier = Modifier.fillMaxSize()) {
-                    ClickableText(
-                        text = AnnotatedString("log out"),
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(10.dp),
-                        onClick = {
-                            logOutViewModel.logout()
-                            navController.navigate(Routes.Login.route)
-                                  },
-                        style = TextStyle(
-                            fontSize = 20.sp,
-                            fontFamily = FontFamily.Cursive,
-                            textDecoration = TextDecoration.Underline,
-                            color = Purple700
-                        )
+
+            }
+            Box(modifier = Modifier.fillMaxSize()) {
+                ClickableText(
+                    text = AnnotatedString("log out"),
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(10.dp),
+                    onClick = {
+                        logOutViewModel.logout()
+                        navController.navigate(Routes.Login.route)
+                    },
+                    style = TextStyle(
+                        fontSize = 20.sp,
+                        fontFamily = FontFamily.Cursive,
+                        textDecoration = TextDecoration.Underline,
+                        color = Purple700
                     )
-                }
-
+                )
             }
         }
     )
@@ -144,4 +149,10 @@ fun MyImage(){
             .width(200.dp)
             .height(200.dp)
     )
+}
+
+@Composable
+@Preview
+fun displayVoice() {
+    DisplayImage(navController = rememberNavController(), logOutViewModel = hiltViewModel())
 }

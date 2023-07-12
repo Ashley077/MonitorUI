@@ -2,10 +2,13 @@ package com.example.myapplication.viewmodel
 
 import androidx.lifecycle.*
 import com.example.myapplication.model.AccountService
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import javax.inject.Inject
 
-class AccountViewModel(private val accountService: AccountService) : ViewModel() {
+@HiltViewModel
+class AccountViewModel @Inject constructor(private val accountService: AccountService) : ViewModel() {
     private val inputUserName = MutableLiveData("")
     val inputUserNameData: LiveData<String>
         get() = inputUserName

@@ -11,9 +11,11 @@ import com.example.myapplication.model.data.local.entity.TokenInfo
 import com.example.myapplication.model.remote.LoginResult
 import com.example.myapplication.model.remote.UserInfo
 import com.google.gson.GsonBuilder
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.net.HttpURLConnection
+import javax.inject.Inject
 
 /**
  * 此類別提供登入服務
@@ -22,7 +24,8 @@ import java.net.HttpURLConnection
  *
  * @author Ashley
  */
-class LoginViewModel(private val tokenInfoDao: TokenInfoDao) : ViewModel() {
+@HiltViewModel
+class LoginViewModel @Inject constructor(private val tokenInfoDao: TokenInfoDao) : ViewModel() {
 
     private val _status = MutableLiveData<RemoteLoginStatus>(RemoteLoginStatus.Init)
 
