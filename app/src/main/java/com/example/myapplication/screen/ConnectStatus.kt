@@ -32,12 +32,12 @@ import com.example.myapplication.component.CustomTopAppBar
 fun ConnectStatus(navController: NavController){
 
     Box(modifier = Modifier.fillMaxSize()){
-        scaffoldContinue(navController)
+        ScaffoldConnect(navController)
     }
 }
 
 @Composable
-fun scaffoldContinue(navController: NavController){
+fun ScaffoldConnect(navController: NavController){
     Scaffold(
         topBar = { CustomTopAppBar(navController, "Connect Status", true)
         }, content = { it
@@ -54,7 +54,7 @@ fun scaffoldContinue(navController: NavController){
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
-                funData()
+                DisplayConnectList()
 
             }
         }
@@ -62,7 +62,7 @@ fun scaffoldContinue(navController: NavController){
 }
 
 @Composable
-fun funData() {
+fun DisplayConnectList() {
 // this variable use to handle list state
     val notesList = remember {
         mutableStateListOf<String>()
