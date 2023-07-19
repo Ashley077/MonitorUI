@@ -20,9 +20,6 @@ class FakeConnectStatusServiceImp @Inject constructor() : ConnectStatusService {
     private val connectList =
         mutableListOf(ConnectRaspberryPi("Ashley"), ConnectRaspberryPi("Jess"))
 
-    private val raspberryPi =
-        mutableListOf(ConnectRaspberryPi("room"), ConnectRaspberryPi("kitchen"))
-
     override fun getConnectList(): List<ConnectRaspberryPi> {
         return connectList
     }
