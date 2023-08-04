@@ -31,7 +31,7 @@ class WebSocketViewModel @Inject constructor(private val tokenInfoDao: TokenInfo
     fun connectToWebSocket(){
         viewModelScope.launch(Dispatchers.IO) {
             val token = tokenInfoDao.getToken()?.token ?: return@launch
-            webSocketManager.connect(BuildConfig.WS_BASE_URL, token)
+            webSocketManager.connect(token)
         }
     }
 
@@ -39,7 +39,6 @@ class WebSocketViewModel @Inject constructor(private val tokenInfoDao: TokenInfo
         val formattedMessage = "app://connect?uuid=1"
         viewModelScope.launch(Dispatchers.IO) {
             webSocketManager.sendMessage(formattedMessage)
-
         }
     }
 
@@ -53,7 +52,9 @@ class WebSocketViewModel @Inject constructor(private val tokenInfoDao: TokenInfo
     }
 
     public override fun onCleared() {
-        webSocketManager.close()
+        viewModelScope.launch {
+            webSocketManager.close()
+        }
         super.onCleared()
     }
 }

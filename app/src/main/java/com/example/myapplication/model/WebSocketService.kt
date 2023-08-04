@@ -9,12 +9,19 @@ import androidx.core.app.NotificationCompat
 import com.example.myapplication.R
 import com.example.myapplication.manager.WebSocketManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.observeOn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class WebSocketService : Service() {
     @Inject lateinit var webSocketManager: WebSocketManager
+
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(Dispatchers.IO + job)
 
     override fun onCreate() {
         super.onCreate()
@@ -41,7 +48,10 @@ class WebSocketService : Service() {
         notificationManager.notify(notificationId, notification)
     }
     override fun onDestroy() {
-        webSocketManager.close()
+        scope.launch {
+            webSocketManager.close()
+        }
+        job.cancel()
         super.onDestroy()
     }
 }
