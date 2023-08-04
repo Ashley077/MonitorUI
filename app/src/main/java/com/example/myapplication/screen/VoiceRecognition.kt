@@ -52,7 +52,7 @@ fun scaffoldvoice(navController: NavController){
                             .fillMaxWidth()
                             .height(50.dp)
                     ) {
-                        Text(text = "Identify")
+                        Text(text = "Start")
                     }
                 }
                 Spacer(modifier = Modifier.height(20.dp))

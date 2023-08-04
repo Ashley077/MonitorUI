@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.myapplication.manager.RemoteClientManager
 import com.example.myapplication.model.data.local.dao.TokenInfoDao
 import com.example.myapplication.model.data.local.entity.TokenInfo
+import com.example.myapplication.model.remote.CheckUserTokenInfo
 import com.example.myapplication.model.remote.LoginResult
 import com.example.myapplication.model.remote.UserInfo
 import com.google.gson.GsonBuilder
@@ -16,6 +17,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.net.HttpURLConnection
 import javax.inject.Inject
+
+private const val TOKEN_CAN_USED = "I'm exist!"
+private const val TOKEN_CAN_NOT_USED = "not exist, get out!"
 
 /**
  * 此類別提供登入服務
@@ -51,11 +55,18 @@ class LoginViewModel @Inject constructor(private val tokenInfoDao: TokenInfoDao)
             if (result == null || result.token.isEmpty()) {
                 _status.postValue(RemoteLoginStatus.Init)
             } else {
-                // send to backend check this token can be used
-                // Yes
-                _status.postValue(RemoteLoginStatus.Success(""))
-                // No
-//                _status.postValue(RemoteLoginStatus.Init)
+                val checkTokenResult = RemoteClientManager.apiServiceClient.checkToken(
+                    CheckUserTokenInfo(result.token)
+                )
+                if (checkTokenResult.code() == HttpURLConnection.HTTP_OK) {
+                    // send to backend check this token can be used
+                    // Yes
+                    _status.postValue(RemoteLoginStatus.Success(""))
+                } else {
+                    // No
+                    tokenInfoDao.delete(result)
+                    _status.postValue(RemoteLoginStatus.Init)
+                }
             }
         }
     }
