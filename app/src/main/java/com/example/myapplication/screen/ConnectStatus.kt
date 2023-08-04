@@ -1,12 +1,15 @@
 package com.example.myapplication.screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,22 +29,29 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.myapplication.component.CustomTopAppBar
+import com.example.myapplication.manager.WebSocketManager
+import com.example.myapplication.model.data.local.dao.TokenInfoDao
+import com.example.myapplication.viewmodel.WebSocketViewModel
 
 @Composable
-
-fun ConnectStatus(navController: NavController){
+fun ConnectStatus(navController: NavController,webSocketViewModel: WebSocketViewModel){
 
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldConnect(navController)
+        ScaffoldConnect(navController,webSocketViewModel = webSocketViewModel)
     }
 }
 
 @Composable
-fun ScaffoldConnect(navController: NavController){
+fun ScaffoldConnect(navController: NavController,webSocketViewModel: WebSocketViewModel){
+    val messageState by webSocketViewModel.messageState.observeAsState(initial = "")
+    val connectedToWebSocket by webSocketViewModel.connectedToWebSocket.observeAsState(false)
     Scaffold(
         topBar = { CustomTopAppBar(navController, "Connect Status", true)
-        }, content = { it
-            Column(modifier = Modifier.fillMaxSize().padding(16.dp),
+        }
+        , content = { it
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
                horizontalAlignment = Alignment.CenterHorizontally) {
                 Box(
                 modifier = Modifier.padding(20.dp),
@@ -54,21 +64,59 @@ fun ScaffoldConnect(navController: NavController){
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
-                DisplayConnectList()
-
+                BasicTextField(
+                    value = webSocketViewModel.uuid,
+                    onValueChange = {newValue : String -> webSocketViewModel.uuid = newValue},
+                    textStyle = TextStyle(
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                    ),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        capitalization = KeyboardCapitalization.None,
+                        imeAction = ImeAction.Done
+                    )
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                Button(
+                    onClick = {
+                        if (connectedToWebSocket){
+                            webSocketViewModel.sendConnectRequest()
+                            Log.i("Ashley-log","send")
+                        }else{
+                            webSocketViewModel.connectToWebSocket()
+                            Log.i("Ashley-log","connect")
+                        }
+                     }) {
+                        Text(
+                        text = if (connectedToWebSocket) "Send Connect Request" else "Connect to Raspberry"
+                        )
+                    }
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = "WebSocket Connection Status: ${if (connectedToWebSocket) "Connected" else "Disconnected"}",
+                    style = TextStyle(fontSize = 18.sp),
+                )
+               Text(
+                    text = "樹莓派ID: $messageState",
+                    style = TextStyle(fontSize = 18.sp),
+                )
             }
         }
     )
 }
 
 @Composable
-fun DisplayConnectList() {
+fun DisplayConnectList(webSocketManager: WebSocketManager) {
 // this variable use to handle list state
     val notesList = remember {
         mutableStateListOf<String>()
     }
 // this variable use to handle edit text input value
     val inputvalue = remember { mutableStateOf(TextFieldValue()) }
+    val connectToWebSocket by remember { mutableStateOf(false)}
+    var inputMessage by remember { mutableStateOf("") }
+    val respberryId by remember { mutableStateOf("") }
 
     Column {
         Row(
@@ -78,35 +126,39 @@ fun DisplayConnectList() {
         ) {
 
             TextField(
-                value = inputvalue.value,
-                onValueChange = {
-                    inputvalue.value = it
-                },
-                modifier = Modifier.weight(0.8f),
-                placeholder = { Text(text = "Enter") },
-                keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.None,
-                    autoCorrect = true, keyboardType = KeyboardType.Text, imeAction = ImeAction.Done
-                ),
-                textStyle = TextStyle(
-                    color = Color.Black, fontSize = TextUnit.Unspecified,
-                    fontFamily = FontFamily.SansSerif
-                ),
-                maxLines = 1,
-                singleLine = true
+                value = inputMessage,
+                onValueChange = { inputMessage = it}
+//                value = inputvalue.value,
+//                onValueChange = {
+//                    inputvalue.value = it
+//                }
+                ,
+//                modifier = Modifier.weight(0.8f),
+//                placeholder = { Text(text = "Enter") },
+//                keyboardOptions = KeyboardOptions(
+//                    capitalization = KeyboardCapitalization.None,
+//                    autoCorrect = true, keyboardType = KeyboardType.Text, imeAction = ImeAction.Done
+//                ),
+//                textStyle = TextStyle(
+//                    color = Color.Black, fontSize = TextUnit.Unspecified,
+//                    fontFamily = FontFamily.SansSerif
+//                ),
+//                maxLines = 1,
+//                singleLine = true
             )
 
-            Button(
-                onClick = {
-                    notesList.add(inputvalue.value.text)
-                    inputvalue.value = TextFieldValue("")
-                },
-                modifier = Modifier
-                    .weight(0.2f)
-                    .fillMaxHeight()
-            ) {
-                Text(text = "ADD")
-            }
+
+//            Button(
+//                onClick = {
+//                    notesList.add(inputvalue.value.text)
+//                    inputvalue.value = TextFieldValue("")
+//                },
+//                modifier = Modifier
+//                    .weight(0.2f)
+//                    .fillMaxHeight()
+//            ) {
+//                Text(text = "ADD")
+//            }
         }
 
         Spacer(modifier = Modifier.height(Dp(1f)))
