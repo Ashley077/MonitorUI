@@ -9,6 +9,7 @@ import com.example.myapplication.Routes
 import com.example.myapplication.viewmodel.AccountViewModel
 import com.example.myapplication.viewmodel.LogOutViewModel
 import com.example.myapplication.viewmodel.LoginViewModel
+import com.example.myapplication.viewmodel.WebSocketViewModel
 
 
 @Composable
@@ -52,7 +53,7 @@ fun ScreenMain(){
         }
 
         composable(Routes.ConnectStatus.route){
-            ConnectStatus(navController = navController)
+            ConnectStatus(navController = navController, webSocketViewModel = hiltViewModel())
 
         }
     }

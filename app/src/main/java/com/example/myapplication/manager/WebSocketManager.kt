@@ -1,5 +1,7 @@
 package com.example.myapplication.manager
 
+import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.myapplication.BuildConfig
 import io.ktor.client.*
@@ -19,26 +21,43 @@ class WebSocketManager @Inject constructor(){
     private lateinit var webSocketSession: DefaultWebSocketSession
     val messageLiveData = MutableLiveData("")
 
-    suspend fun connect(erl: String){
+    private val _isConnected = MutableLiveData(false)
+    val isConnected: LiveData<Boolean>
+        get() = _isConnected
+
+    suspend fun connect(erl: String, token: String){
         client = HttpClient{
             install(WebSockets)
         }
-        webSocketSession = client.webSocketSession {
-            this.url.takeFrom(URLBuilder().apply {
-                takeFrom(URL(BuildConfig.WS_BASE_URL))
-            })
+        try {
+            webSocketSession = client.webSocketSession {
+//                this.url.takeFrom(URLBuilder().apply {
+//                    takeFrom(URL(erl))
+//                })
+                this.url.set(URLProtocol.WS.name, "120.110.113.211", 8080)
+                this.headers.append("token", token)
+            }
+            _isConnected.postValue(true)
+            startListening()
+        } catch (e: Exception){
+            _isConnected.postValue(false)
+            e.printStackTrace()
+            Log.i("Ashley-log", e.message ?: "WTF")
         }
-
-        startListening()
     }
     fun sendMessage(message: String){
         GlobalScope.launch(Dispatchers.IO){
-            webSocketSession.send(Frame.Text(message))
+            if (_isConnected.value == true){
+                webSocketSession.send(Frame.Text(message))
+            }
         }
     }
     fun close(){
         GlobalScope.launch(Dispatchers.IO){
-            webSocketSession.close()
+            if (_isConnected.value == true){
+                webSocketSession.close()
+                _isConnected.postValue(false)
+            }
             client.close()
         }
     }
@@ -46,17 +65,21 @@ class WebSocketManager @Inject constructor(){
     private fun startListening(){
         GlobalScope.launch(Dispatchers.IO){
             try{
+                Log.i("Ashley-log", "Start YA!!! ")
                 for(frame in webSocketSession.incoming){
                     when(frame){
                         is Frame.Text -> {
                             val message = frame.readText()
-                            messageLiveData.value = message
+                            messageLiveData.postValue(message)
                         }
                     }
                 }
             } catch (e: Exception){
-
+                Log.i("Ashley-log", "${e.message}")
+                _isConnected.postValue(false)
             }
         }
     }
+
+
 }

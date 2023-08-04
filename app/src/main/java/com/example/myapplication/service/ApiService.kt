@@ -1,11 +1,10 @@
 package com.example.myapplication.service
 
-import com.example.myapplication.model.remote.LoginResult
-import com.example.myapplication.model.remote.RegisterResult
-import com.example.myapplication.model.remote.UserInfo
-import com.example.myapplication.model.remote.UserRegisterInfo
+import com.example.myapplication.model.remote.*
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.Field
+import retrofit2.http.FieldMap
 import retrofit2.http.POST
 
 /**
@@ -39,4 +38,16 @@ interface ApiService {
      */
     @POST("/register")
     suspend fun register(@Body userRegisterInfo: UserRegisterInfo): Response<RegisterResult>
+
+    /**
+     * "/checkToken"的 HTTP POST 請求
+     *
+     * @param token 傳入需檢查的 Token
+     *
+     * @return String
+     *
+     * @author Ashley
+     */
+    @POST("/checkToken")
+    suspend fun checkToken(@Body checkUserTokenInfo: CheckUserTokenInfo): Response<CheckUserTokenResult>
 }

@@ -1,36 +1,52 @@
 package com.example.myapplication.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.myapplication.BuildConfig
 import com.example.myapplication.manager.WebSocketManager
+import com.example.myapplication.model.data.local.dao.TokenInfoDao
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class WebSocketViewModel @Inject constructor(): ViewModel() {
+class WebSocketViewModel @Inject constructor(private val tokenInfoDao: TokenInfoDao): ViewModel() {
     private val webSocketManager = WebSocketManager()
-    val messageState = MutableLiveData("")
+    private val _messageState = MutableLiveData("")
+    val messageState : LiveData<String>
+        get() = _messageState
+    var uuid by mutableStateOf("")
 
-    fun connectWebSocket(){
-        GlobalScope.launch {
-            webSocketManager.connect(BuildConfig.WS_BASE_URL)
+    val connectedToWebSocket: LiveData<Boolean>
+        get() = webSocketManager.isConnected
+
+    fun connectToWebSocket(){
+        viewModelScope.launch(Dispatchers.IO) {
+            val token = tokenInfoDao.getToken()?.token ?: return@launch
+            webSocketManager.connect(BuildConfig.WS_BASE_URL, token)
         }
     }
 
-    fun sendMessage(message: String){
-        GlobalScope.launch {
-            webSocketManager.sendMessage(message)
+    fun sendConnectRequest(){
+        val formattedMessage = "app://connect?uuid=1"
+        viewModelScope.launch(Dispatchers.IO) {
+            webSocketManager.sendMessage(formattedMessage)
+
         }
     }
 
     init {
-        GlobalScope.launch {
+        viewModelScope.launch {
             webSocketManager.messageLiveData.observeForever { message ->
-                messageState.value = message
+                _messageState.postValue(message)
             }
         }
 
