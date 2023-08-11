@@ -16,6 +16,11 @@ import java.net.URL
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * @property isConnected 連線狀態
+ *
+ * @author Ashley
+ */
 @Singleton
 class WebSocketManager @Inject constructor() {
     private lateinit var client: HttpClient
@@ -26,6 +31,13 @@ class WebSocketManager @Inject constructor() {
     val isConnected: LiveData<Boolean>
         get() = _isConnected
 
+    /**
+     * 建立 WebSocket 連線，連線成功更新連線狀態
+     *
+     * @param token 連線需要的 token 字串，token 放在 header 中
+     *
+     * @author Ashley
+     */
     suspend fun connect(token: String) {
         client = HttpClient {
             install(WebSockets)
@@ -51,6 +63,13 @@ class WebSocketManager @Inject constructor() {
         }
     }
 
+    /**
+     * webSocket 連線上傳送消息
+     *
+     * @param message 傳送的訊息
+     *
+     * @author Ashley
+     */
     suspend fun sendMessage(message: String) {
         withContext(Dispatchers.IO) {
             if (_isConnected.value == true) {
@@ -70,6 +89,11 @@ class WebSocketManager @Inject constructor() {
         }
     }
 
+    /**
+     * WebSocket 連線上監聽接收的消息
+     *
+     * @author Ashley
+     */
     private suspend fun startListening() {
         withContext(Dispatchers.IO) {
             try {

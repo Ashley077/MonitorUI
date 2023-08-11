@@ -28,6 +28,11 @@ class WebSocketViewModel @Inject constructor(private val tokenInfoDao: TokenInfo
     val connectedToWebSocket: LiveData<Boolean>
         get() = webSocketManager.isConnected
 
+    /**
+     * 連線到 WebSocket， [tokenInfoDao] 取 token
+     *
+     * @author Ashley
+     */
     fun connectToWebSocket(){
         viewModelScope.launch(Dispatchers.IO) {
             val token = tokenInfoDao.getToken()?.token ?: return@launch
@@ -35,8 +40,13 @@ class WebSocketViewModel @Inject constructor(private val tokenInfoDao: TokenInfo
         }
     }
 
+    /**
+     * 發送連線請求
+     *
+     * @author Ashley
+     */
     fun sendConnectRequest(){
-        val formattedMessage = "app://connect?uuid=1"
+        val formattedMessage = "app://connect?uuid=333"
         viewModelScope.launch(Dispatchers.IO) {
             webSocketManager.sendMessage(formattedMessage)
         }
