@@ -1,5 +1,6 @@
 package com.example.myapplication.screen
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -34,39 +35,68 @@ import com.example.myapplication.model.data.local.dao.TokenInfoDao
 import com.example.myapplication.viewmodel.WebSocketViewModel
 
 @Composable
-fun ConnectStatus(navController: NavController,webSocketViewModel: WebSocketViewModel){
+fun ConnectStatus(navController: NavController, webSocketViewModel: WebSocketViewModel) {
 
-    Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldConnect(navController,webSocketViewModel = webSocketViewModel)
+    Box(modifier = Modifier.fillMaxSize()) {
+        ScaffoldConnect(navController, webSocketViewModel = webSocketViewModel)
     }
 }
 
 @Composable
-fun ScaffoldConnect(navController: NavController,webSocketViewModel: WebSocketViewModel){
+fun ScaffoldConnect(navController: NavController, webSocketViewModel: WebSocketViewModel) {
     val messageState by webSocketViewModel.messageState.observeAsState(initial = "")
     val connectedToWebSocket by webSocketViewModel.connectedToWebSocket.observeAsState(false)
+    val uuid = remember { mutableStateOf("") }
+    val uuid1 = remember { mutableStateOf("") }
     Scaffold(
-        topBar = { CustomTopAppBar(navController, "Connect Status", true)
-        }
-        , content = { it
-            Column(modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-               horizontalAlignment = Alignment.CenterHorizontally) {
+        topBar = {
+            CustomTopAppBar(navController, "Connect Status", true)
+        }, content = {
+            it
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Box(
-                modifier = Modifier.padding(20.dp),
-                contentAlignment = Alignment.Center
-                ){
-                    Text(text = "Connnect Status", modifier = Modifier.align(Alignment.TopCenter),
-                    style = TextStyle(fontSize = 50.sp,
-                        fontFamily = FontFamily.Cursive,
-                    ))
+                    modifier = Modifier.padding(20.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Connect Status", modifier = Modifier.align(Alignment.TopCenter),
+                        style = TextStyle(
+                            fontSize = 50.sp,
+                            fontFamily = FontFamily.Cursive,
+                        )
+                    )
+                }
+                Box (
+                    modifier = Modifier.padding(20.dp),
+                    contentAlignment = Alignment.Center
+                        ){
+                    TextField(
+                        value = uuid.value,
+                        onValueChange = { input ->
+                            uuid.value = input
+                        },
+//                        modifier = Modifier.weight(0.8f),
+                        placeholder = { Text(text = "Enter") },
+                        textStyle = TextStyle(
+                            fontSize = 24.sp
+                        ),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                            capitalization = KeyboardCapitalization.None,
+                            imeAction = ImeAction.Done
+                        ),
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
                 BasicTextField(
-                    value = webSocketViewModel.uuid,
-                    onValueChange = {newValue : String -> webSocketViewModel.uuid = newValue},
+                    value = uuid1.value,
+                    onValueChange = { newValue: String -> uuid1.value = newValue },
                     textStyle = TextStyle(
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
@@ -78,26 +108,29 @@ fun ScaffoldConnect(navController: NavController,webSocketViewModel: WebSocketVi
                     )
                 )
                 Spacer(modifier = Modifier.height(20.dp))
+
                 Button(
                     onClick = {
-                        if (connectedToWebSocket){
-                            webSocketViewModel.sendConnectRequest()
-                            Log.i("Ashley-log","send")
-                        }else{
+                        if (connectedToWebSocket) {
+                            webSocketViewModel.sendConnectRequest(uuid = uuid.value)
+                            Log.i("Ashley-log", "send")
+                        } else {
                             webSocketViewModel.connectToWebSocket()
-                            Log.i("Ashley-log","connect")
+                            Log.i("Ashley-log", "connect")
                         }
-                     }) {
-                        Text(
+                    },
+                    enabled = uuid.value.isNotEmpty()
+                ) {
+                    Text(
                         text = if (connectedToWebSocket) "Send Connect Request" else "Connect to Raspberry"
-                        )
-                    }
+                    )
+                }
                 Spacer(modifier = Modifier.height(20.dp))
                 Text(
                     text = "WebSocket Connection Status: ${if (connectedToWebSocket) "Connected" else "Disconnected"}",
                     style = TextStyle(fontSize = 18.sp),
                 )
-               Text(
+                Text(
                     text = "樹莓派ID: $messageState",
                     style = TextStyle(fontSize = 18.sp),
                 )
@@ -114,7 +147,7 @@ fun DisplayConnectList(webSocketManager: WebSocketManager) {
     }
 // this variable use to handle edit text input value
     val inputvalue = remember { mutableStateOf(TextFieldValue()) }
-    val connectToWebSocket by remember { mutableStateOf(false)}
+    val connectToWebSocket by remember { mutableStateOf(false) }
     var inputMessage by remember { mutableStateOf("") }
     val respberryId by remember { mutableStateOf("") }
 
@@ -127,12 +160,11 @@ fun DisplayConnectList(webSocketManager: WebSocketManager) {
 
             TextField(
                 value = inputMessage,
-                onValueChange = { inputMessage = it}
+                onValueChange = { inputMessage = it },
 //                value = inputvalue.value,
 //                onValueChange = {
 //                    inputvalue.value = it
 //                }
-                ,
 //                modifier = Modifier.weight(0.8f),
 //                placeholder = { Text(text = "Enter") },
 //                keyboardOptions = KeyboardOptions(
