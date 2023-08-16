@@ -47,7 +47,12 @@ fun ScaffoldForgotPassword(navController: NavHostController){
                 val email = remember { mutableStateOf(TextFieldValue()) }
                 val password = remember { mutableStateOf(TextFieldValue()) }
 
+                Text(
+                    text = "Forgot password",
+                    style = TextStyle(fontSize = 50.sp, fontFamily = FontFamily.Cursive)
+                )
 
+                Spacer(modifier = Modifier.height(20.dp))
                 TextField(
                     label = { Text(text = "email") },
                     value =email .value,
