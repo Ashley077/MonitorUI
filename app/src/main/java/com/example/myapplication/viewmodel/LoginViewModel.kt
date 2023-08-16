@@ -15,6 +15,7 @@ import com.google.gson.GsonBuilder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.net.ConnectException
 import java.net.HttpURLConnection
 import javax.inject.Inject
 
@@ -55,17 +56,27 @@ class LoginViewModel @Inject constructor(private val tokenInfoDao: TokenInfoDao)
             if (result == null || result.token.isEmpty()) {
                 _status.postValue(RemoteLoginStatus.Init)
             } else {
-                val checkTokenResult = RemoteClientManager.apiServiceClient.checkToken(
-                    CheckUserTokenInfo(result.token)
-                )
-                if (checkTokenResult.code() == HttpURLConnection.HTTP_OK) {
-                    // send to backend check this token can be used
-                    // Yes
-                    _status.postValue(RemoteLoginStatus.Success(""))
-                } else {
-                    // No
-                    tokenInfoDao.delete(result)
-                    _status.postValue(RemoteLoginStatus.Init)
+                try {
+                    val checkTokenResult = RemoteClientManager.apiServiceClient.checkToken(
+                        CheckUserTokenInfo(result.token)
+                    )
+                    if (checkTokenResult.code() == HttpURLConnection.HTTP_OK) {
+                        // send to backend check this token can be used
+                        // Yes
+                        _status.postValue(RemoteLoginStatus.Success(""))
+                    } else {
+                        // No
+                        tokenInfoDao.delete(result)
+                        _status.postValue(RemoteLoginStatus.Init)
+                    }
+                } catch (e: ConnectException) {
+                    _status.postValue(
+                        RemoteLoginStatus.Failed(
+                            Throwable(
+                                "伺服器出錯 請稍後再試"
+                            )
+                        )
+                    )
                 }
             }
         }
@@ -101,7 +112,7 @@ class LoginViewModel @Inject constructor(private val tokenInfoDao: TokenInfoDao)
                             val loginResult = gson.fromJson(it.string(), LoginResult::class.java)
 //                    Log.i("Ashley-log", loginResult.toString())
                             var errStr = ""
-                            when(loginResult.message) {
+                            when (loginResult.message) {
                                 "account or password is wrong" -> {
                                     errStr = "帳號密碼錯誤"
                                 }
@@ -127,8 +138,7 @@ class LoginViewModel @Inject constructor(private val tokenInfoDao: TokenInfoDao)
                         )
                     }
                 }
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
                 _status.postValue(
                     RemoteLoginStatus.Failed(
                         Throwable(
