@@ -16,30 +16,62 @@ import javax.inject.Inject
  * WebSocketViewModel 連線功能
  *
  * @property tokenInfoDao token 資料庫(通過 Hilt 自動注入)
- * @property messageState 訊息狀態
- * @property connectedToWebSocket WebSocket 連線
+ * @property raspberryMessage 樹莓派訊息
+ * @property recognitionMessage 辨識聲音訊息
+ * @property sampleMessage 樣本訊息
+ * @property connectedToWebSocket WebSocket 連線(通過 Hilt 自動注入)
  *
  * @author Ashley
  */
 @HiltViewModel
-class WebSocketViewModel @Inject constructor(private val tokenInfoDao: TokenInfoDao) : ViewModel() {
-    private val webSocketManager = WebSocketManager()
-    private val _messageState = MutableLiveData("")
-    val messageState: LiveData<String>
-        get() = _messageState
+class WebSocketViewModel @Inject constructor(
+    private val tokenInfoDao: TokenInfoDao,
+    private val webSocketManager: WebSocketManager
+) : ViewModel() {
+
+    private val _raspberryMessage = MutableLiveData("")
+    val raspberryMessage: LiveData<String>
+        get() = _raspberryMessage
+
+    private val _recognitionMessage = MutableLiveData("")
+    val recognitionMessage: LiveData<String>
+        get() = _recognitionMessage
+
+    private val _sampleMessage = MutableLiveData("")
+    val sampleMessage: LiveData<String>
+        get() = _sampleMessage
 
     val connectedToWebSocket: LiveData<Boolean>
         get() = webSocketManager.isConnected
 
+
     init {
         viewModelScope.launch {
             webSocketManager.messageLiveData.observeForever { message ->
-                if (message.isEmpty() || message.isBlank()) {
-                    Log.i("Ashley-log", "is empty")
+                when {
+                    message.isEmpty() || message.isBlank() -> { }
+                    message.isReturnNotification() -> {
+                        // TODO Peng
+                        _recognitionMessage.postValue(message)
+                    }
+                    message.isReturnAddSample() -> {
+                        // TODO Peng
+                        _sampleMessage.postValue(message)
+                    }
+                    message.isCannotFoundUuid() -> {
+                        _raspberryMessage.postValue(message)
+                    }
+                    else -> {
+                        // TODO Ashley
+                        _raspberryMessage.postValue(message)
+                    }
                 }
-                _messageState.postValue(message)
             }
         }
+    }
+
+    companion object {
+        const val CANNOT_FOUND_UUID = "cannot found uuid"
     }
 
     /**
@@ -79,7 +111,7 @@ class WebSocketViewModel @Inject constructor(private val tokenInfoDao: TokenInfo
     /**
      * 此方法只負責傳送至後端，不負責檢查格式
      *
-     * @pram message 訊息
+     * @param message 訊息
      *
      * @author Ashley
      */
@@ -90,3 +122,16 @@ class WebSocketViewModel @Inject constructor(private val tokenInfoDao: TokenInfo
     }
 }
 
+private fun String.isReturnNotification(): Boolean {
+    // TODO Peng
+    return true
+}
+
+private fun String.isReturnAddSample(): Boolean {
+    // TODO Peng
+    return true
+}
+
+private fun String.isCannotFoundUuid(): Boolean {
+    return this == WebSocketViewModel.CANNOT_FOUND_UUID
+}

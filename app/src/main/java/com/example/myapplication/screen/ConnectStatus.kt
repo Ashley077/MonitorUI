@@ -44,15 +44,15 @@ fun ConnectStatus(navController: NavController, webSocketViewModel: WebSocketVie
 
 @Composable
 fun ScaffoldConnect(navController: NavController, webSocketViewModel: WebSocketViewModel) {
-    val messageState by webSocketViewModel.messageState.observeAsState(initial = "")
+    val messageState by webSocketViewModel.raspberryMessage.observeAsState(initial = "")
     val connectedToWebSocket by webSocketViewModel.connectedToWebSocket.observeAsState(false)
     val uuid = remember { mutableStateOf("") }
     val uuid1 = remember { mutableStateOf("") }
     Scaffold(
         topBar = {
             CustomTopAppBar(navController, "Connect Status", true)
-        }, content = {
-            it
+        }, content = { paddingValues ->
+            paddingValues
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -71,10 +71,10 @@ fun ScaffoldConnect(navController: NavController, webSocketViewModel: WebSocketV
                         )
                     )
                 }
-                Box (
+                Box(
                     modifier = Modifier.padding(20.dp),
                     contentAlignment = Alignment.Center
-                        ){
+                ) {
                     TextField(
                         value = uuid.value,
                         onValueChange = { input ->
@@ -130,10 +130,16 @@ fun ScaffoldConnect(navController: NavController, webSocketViewModel: WebSocketV
                     text = "WebSocket Connection Status: ${if (connectedToWebSocket) "Connected" else "Disconnected"}",
                     style = TextStyle(fontSize = 18.sp),
                 )
-                Text(
-                    text = "樹莓派ID: $messageState",
-                    style = TextStyle(fontSize = 18.sp),
-                )
+                if (messageState != WebSocketViewModel.CANNOT_FOUND_UUID) {
+                    messageState.split(" ").forEach {
+                        Text(
+                            text = "樹莓派ID: $it",
+                            style = TextStyle(fontSize = 18.sp),
+                        )
+                    }
+                } else {
+                    Text(text = "樹莓派連線錯誤")
+                }
             }
         }
     )
