@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.myapplication.Routes
+import com.example.myapplication.component.autoCloseKeyboard
 import com.example.myapplication.ui.theme.Purple700
 import com.example.myapplication.viewmodel.AccountViewModel
 import com.example.myapplication.viewmodel.LoginViewModel
@@ -69,7 +69,7 @@ fun LoginPage(
                 firstSearch.value = false
                 loginViewModel.searchToken()
             }
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = Modifier.fillMaxSize().autoCloseKeyboard()) {
                 ClickableText(
                     text = AnnotatedString("Sign up here"),
                     modifier = Modifier
