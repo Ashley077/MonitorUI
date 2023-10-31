@@ -14,6 +14,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -29,10 +30,13 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.myapplication.MainActivity
 import com.example.myapplication.component.CustomTopAppBar
 import com.example.myapplication.manager.WebSocketManager
+import com.example.myapplication.model.Notification
 import com.example.myapplication.model.data.local.dao.TokenInfoDao
 import com.example.myapplication.viewmodel.WebSocketViewModel
+import okhttp3.internal.notify
 
 @Composable
 fun ConnectStatus(navController: NavController, webSocketViewModel: WebSocketViewModel) {
@@ -44,6 +48,7 @@ fun ConnectStatus(navController: NavController, webSocketViewModel: WebSocketVie
 
 @Composable
 fun ScaffoldConnect(navController: NavController, webSocketViewModel: WebSocketViewModel) {
+    val context = LocalContext.current
     val messageState by webSocketViewModel.raspberryMessage.observeAsState(initial = "")
     val connectedToWebSocket by webSocketViewModel.connectedToWebSocket.observeAsState(false)
     val uuid = remember { mutableStateOf("") }
@@ -140,10 +145,19 @@ fun ScaffoldConnect(navController: NavController, webSocketViewModel: WebSocketV
                 } else {
                     Text(text = "樹莓派連線錯誤")
                 }
+
+            }
+            Button(
+                onClick = {
+                    Notification(context, "居家監控", "火災").firNotification()
+                }) {
+                Text(text = " notification test", fontSize = 16.sp)
+
             }
         }
     )
 }
+
 
 @Composable
 fun DisplayConnectList(webSocketManager: WebSocketManager) {

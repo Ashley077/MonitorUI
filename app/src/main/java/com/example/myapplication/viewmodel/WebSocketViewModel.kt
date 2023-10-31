@@ -1,13 +1,28 @@
 package com.example.myapplication.viewmodel
 
+import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myapplication.BuildConfig
+import com.example.myapplication.MainActivity
+import com.example.myapplication.R
 import com.example.myapplication.manager.WebSocketManager
 import com.example.myapplication.model.data.local.dao.TokenInfoDao
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,12 +36,18 @@ import javax.inject.Inject
  * @property sampleMessage 樣本訊息
  * @property connectedToWebSocket WebSocket 連線(通過 Hilt 自動注入)
  *
+ * @property notificationManager 通知管理器
+ * @property notificationId 通知ID
+ * @property notificationChannelId 通知頻道ID
+ * @property notificationBuilder 建構通知
+ *
  * @author Ashley
  */
 @HiltViewModel
 class WebSocketViewModel @Inject constructor(
     private val tokenInfoDao: TokenInfoDao,
-    private val webSocketManager: WebSocketManager
+    private val webSocketManager: WebSocketManager,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _raspberryMessage = MutableLiveData("")
@@ -44,6 +65,24 @@ class WebSocketViewModel @Inject constructor(
     val connectedToWebSocket: LiveData<Boolean>
         get() = webSocketManager.isConnected
 
+//    private val notificationManager =
+//        (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).apply {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                createNotificationChannel(NotificationChannel(
+//                    "voice notification",
+//                    "fire",
+//                    NotificationManager.IMPORTANCE_HIGH
+//                ))
+//            }
+//        }
+//    private val notificationId = 1
+//    private val notificationChannelId = BuildConfig.NOTIFICATiON_CHANNEL_ID
+//    private val notificationBuilder = NotificationCompat.Builder(
+//        context, notificationChannelId
+//    )
+//        .setSmallIcon(R.drawable.voice)
+//        .setContentTitle("voice channel")
+//        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
     init {
         viewModelScope.launch {
@@ -51,6 +90,7 @@ class WebSocketViewModel @Inject constructor(
                 when {
                     message.isEmpty() || message.isBlank() -> { }
                     message.isReturnNotification() -> {
+//                        showNotification(message)
                         // TODO Peng
                         _recognitionMessage.postValue(message)
                     }
@@ -120,6 +160,19 @@ class WebSocketViewModel @Inject constructor(
             webSocketManager.sendMessage(message)
         }
     }
+
+//    fun notification(name:String = "fire zai"){
+//        showNotification(name)
+//    }
+//    private fun showNotification(message: String){
+//        val intent = Intent(context, MainActivity::class.java)
+//        val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+//        notificationBuilder.addAction(R.drawable.voice, "open mic?", pendingIntent)
+//        notificationBuilder.setContentText(message)
+//        notificationManager.notify(notificationId, notificationBuilder.build())
+////        Log.i("Arvin-log", "notification enable is ${NotificationManagerCompat.from(context).areNotificationsEnabled()}")
+//    }
+
 }
 
 private fun String.isReturnNotification(): Boolean {
@@ -135,3 +188,4 @@ private fun String.isReturnAddSample(): Boolean {
 private fun String.isCannotFoundUuid(): Boolean {
     return this == WebSocketViewModel.CANNOT_FOUND_UUID
 }
+
